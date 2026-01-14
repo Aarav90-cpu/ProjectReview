@@ -8,11 +8,10 @@
         /* --- GLASS THEME --- */
         :root {
             --bg-color: #f0f2f5;
-            --text-color: #1d1d1f;
-            --glass-bg: rgba(255, 255, 255, 0.75);
-            --border: rgba(255, 255, 255, 0.5);
-            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --glass-bg: rgba(255, 255, 255, 0.85);
             --accent: #0071e3;
+            --gold: #ffc107;
+            --gray: #ddd;
         }
 
         body {
@@ -30,23 +29,59 @@
             background: var(--glass-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.6);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            padding: 40px 30px;
             border-radius: 24px;
             width: 100%;
             max-width: 450px;
             text-align: center;
         }
 
-        input, textarea, select {
+        h2 { margin-top: 0; color: #333; }
+        
+        input[type="text"], textarea {
             width: 100%;
             padding: 12px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             border-radius: 10px;
             border: 1px solid #ccc;
             background: rgba(255, 255, 255, 0.9);
-            box-sizing: border-box; /* Fixes padding issues */
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        /* --- STAR RATING CSS --- */
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse; /* Key trick: Reverse order for selection logic */
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 5px;
+        }
+
+        /* Hide the actual radio buttons */
+        .star-rating input {
+            display: none;
+        }
+
+        /* Style the labels (the visible stars) */
+        .star-rating label {
+            font-size: 2.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        /* Hover Effect: Color the hovered star and all previous siblings */
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: var(--gold);
+        }
+
+        /* Checked Effect: Color the checked star and all previous siblings */
+        .star-rating input:checked ~ label {
+            color: var(--gold);
         }
 
         button {
@@ -59,36 +94,39 @@
             font-size: 1.1rem;
             cursor: pointer;
             font-weight: bold;
+            transition: transform 0.1s;
         }
         
-        button:disabled { background: #ccc; }
+        button:active { transform: scale(0.98); }
+        button:disabled { background: #ccc; cursor: not-allowed; }
 
-        .loader { display: none; margin-top: 10px; font-size: 0.9rem; color: #555; }
+        .loader { display: none; margin-top: 15px; font-size: 0.9rem; color: #555; }
     </style>
 </head>
 <body>
 
     <div class="glass-panel">
         <h2>✨ Review My Project</h2>
-        <p style="color:#666; margin-bottom:20px;">Your feedback is saved directly to my database.</p>
+        <p style="color:#666; margin-bottom:20px;">Tap a star to rate!</p>
 
         <form name="submit-to-google-sheet">
+            
             <input name="name" type="text" placeholder="Your Name" required>
             
-            <select name="rating" required>
-                <option value="" disabled selected>Rate the project...</option>
-                <option value="5 Stars">⭐⭐⭐⭐⭐ Excellent</option>
-                <option value="4 Stars">⭐⭐⭐⭐ Very Good</option>
-                <option value="3 Stars">⭐⭐⭐ Good</option>
-                <option value="2 Stars">⭐⭐ Needs Work</option>
-            </select>
+            <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5" required><label for="star5" title="5 Stars">★</label>
+                <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 Stars">★</label>
+                <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="3 Stars">★</label>
+                <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 Stars">★</label>
+                <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 Star">★</label>
+            </div>
 
-            <textarea name="comment" rows="4" placeholder="Any comments?" required></textarea>
+            <textarea name="comment" rows="3" placeholder="Any comments?" required></textarea>
 
             <button type="submit" id="btn">Submit Review</button>
         </form>
 
-        <div class="loader" id="loader">Sending data to cloud...</div>
+        <div class="loader" id="loader">Sending data...</div>
         <div id="success" style="display:none; color:green; margin-top:15px; font-weight:bold;">
             ✅ Review Saved! Thank you.
         </div>
@@ -108,12 +146,18 @@
         form.addEventListener('submit', e => {
             e.preventDefault();
             
-            // Show loading state
+            // Check if user selected a star (sometimes required ignores radios)
+            const rating = document.querySelector('input[name="rating"]:checked');
+            if (!rating) {
+                alert("Please tap a star to rate!");
+                return;
+            }
+
             btn.disabled = true;
             btn.innerText = "Saving...";
             loader.style.display = 'block';
 
-            // Convert form data to JSON
+            // Convert form data
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
@@ -122,13 +166,12 @@
                 body: JSON.stringify(data)
             })
             .then(response => {
-                // Success!
                 loader.style.display = 'none';
                 success.style.display = 'block';
                 btn.innerText = "Submitted";
                 form.reset();
                 
-                // Reset button after 3 seconds so another person can review
+                // Reset button after 4 seconds
                 setTimeout(() => {
                     success.style.display = 'none';
                     btn.disabled = false;
