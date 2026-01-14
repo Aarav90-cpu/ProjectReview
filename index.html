@@ -6,12 +6,15 @@
     <title>Review Sikkim Project</title>
     <style>
         /* --- GLASS THEME --- */
-        :root {
-            --bg-color: #f0f2f5;
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --accent: #0071e3;
-            --gold: #ffc107;
-            --gray: #ddd;
+:root {
+            --bg-gradient: radial-gradient(circle at 50% 50%, #eef2f5 0%, #dbe2e8 100%);
+            /* Much more transparent glass background */
+            --glass-bg: rgba(255, 255, 255, 0.25); 
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            
+            --accent: #0071e3; /* The Blue Color */
+            --gold: #ffc107;   /* The Star Fill Color */
         }
 
         body {
@@ -31,10 +34,11 @@
 
         .glass-panel {
             background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.6);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            /* This blur is what makes the text readable on a transparent background */
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
             padding: 40px 30px;
             border-radius: 24px;
             width: 100%;
@@ -44,48 +48,53 @@
 
         h2 { margin-top: 0; color: #333; }
         
+        /* Inputs are slightly transparent too */
         input[type="text"], textarea {
             width: 100%;
             padding: 12px;
             margin-bottom: 20px;
             border-radius: 10px;
-            border: 1px solid #ccc;
-            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255,255,255, 0.6);
+            background: rgba(255, 255, 255, 0.5); 
             box-sizing: border-box;
             font-family: inherit;
+            outline: none;
         }
 
-        /* --- STAR RATING CSS --- */
+        input:focus, textarea:focus {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: var(--accent);
+        }
+
+        /* --- NEW STAR RATING CSS --- */
         .star-rating {
             display: flex;
-            flex-direction: row-reverse; /* Key trick: Reverse order for selection logic */
+            flex-direction: row-reverse;
             justify-content: center;
             margin-bottom: 20px;
-            gap: 5px;
+            gap: 8px; /* Slightly more space between stars */
         }
 
-        /* Hide the actual radio buttons */
-        .star-rating input {
-            display: none;
-        }
+        .star-rating input { display: none; }
 
-        /* Style the labels (the visible stars) */
         .star-rating label {
-            font-size: 2.5rem;
-            color: var(--gray);
+            font-size: 3.5rem; /* Bigger stars */
             cursor: pointer;
-            transition: color 0.2s;
+            transition: all 0.2s ease;
+            
+            /* THE BLUE OUTLINE TRICK */
+            color: transparent; 
+            -webkit-text-stroke: 2px var(--accent); /* 2px Blue Outline */
         }
 
-        /* Hover Effect: Color the hovered star and all previous siblings */
+        /* Hover & Checked State: Fill with Gold */
         .star-rating label:hover,
-        .star-rating label:hover ~ label {
-            color: var(--gold);
-        }
-
-        /* Checked Effect: Color the checked star and all previous siblings */
+        .star-rating label:hover ~ label,
         .star-rating input:checked ~ label {
-            color: var(--gold);
+            color: var(--gold); /* Fills with Gold */
+            -webkit-text-stroke: 0px; /* Removes outline when filled (optional) */
+            transform: scale(1.1); /* Slight pop effect */
+            filter: drop-shadow(0 0 5px rgba(255, 193, 7, 0.6)); /* Glow */
         }
 
         button {
@@ -99,30 +108,31 @@
             cursor: pointer;
             font-weight: bold;
             transition: transform 0.1s;
+            box-shadow: 0 4px 15px rgba(0, 113, 227, 0.3);
         }
         
         button:active { transform: scale(0.98); }
-        button:disabled { background: #ccc; cursor: not-allowed; }
+        button:disabled { background: #ccc; cursor: not-allowed; box-shadow: none;}
 
         .loader { display: none; margin-top: 15px; font-size: 0.9rem; color: #555; }
     </style>
 </head>
 <body>
 
-    <div class="glass-panel">
+    <div>
         <h2>✨ Review My Project</h2>
-        <p style="color:#666; margin-bottom:20px;">Tap a star to rate!</p>
+        <p style="color:#444; margin-bottom:20px; font-weight: 500;">Tap a star to rate!</p>
 
         <form name="submit-to-google-sheet">
             
             <input name="name" type="text" placeholder="Your Name" required>
             
             <div class="star-rating">
-                <input type="radio" id="star5" name="rating" value="5" required><label for="star5" title="5 Stars">★</label>
-                <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 Stars">★</label>
-                <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="3 Stars">★</label>
-                <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 Stars">★</label>
-                <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 Star">★</label>
+                <input type="radio" id="star5" name="rating" value="5" required><label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
             </div>
 
             <textarea name="comment" rows="3" placeholder="Any comments?" required></textarea>
@@ -150,7 +160,6 @@
         form.addEventListener('submit', e => {
             e.preventDefault();
             
-            // Check if user selected a star (sometimes required ignores radios)
             const rating = document.querySelector('input[name="rating"]:checked');
             if (!rating) {
                 alert("Please tap a star to rate!");
@@ -161,7 +170,6 @@
             btn.innerText = "Saving...";
             loader.style.display = 'block';
 
-            // Convert form data
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
@@ -174,8 +182,6 @@
                 success.style.display = 'block';
                 btn.innerText = "Submitted";
                 form.reset();
-                
-                // Reset button after 4 seconds
                 setTimeout(() => {
                     success.style.display = 'none';
                     btn.disabled = false;
