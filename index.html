@@ -3,221 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liquid Glass - 8th Grade Project</title>
+    <title>Project Review</title>
     <style>
-        /* --- GLOBAL VARIABLES & RESET --- */
+        /* --- COPYING THE GLASS THEME --- */
         :root {
             --bg-color: #f0f2f5;
             --text-color: #1d1d1f;
-            --accent-color: #0071e3;
-            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-bg: rgba(255, 255, 255, 0.75);
             --glass-border: rgba(255, 255, 255, 0.5);
             --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --accent: #0071e3;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        
         body {
-            background: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
             background-image: radial-gradient(circle at 50% 50%, #eef2f5 0%, #dbe2e8 100%);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-color);
         }
 
-        /* --- LAYOUT UTILITIES --- */
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        section {
-            margin-bottom: 60px;
-            padding: 40px;
-            border-radius: 24px;
+        .glass-panel {
             background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
             box-shadow: var(--shadow);
-        }
-
-        h1, h2, h3 { color: #111; margin-bottom: 15px; }
-        h1 { font-size: 2.5rem; text-align: center; }
-        h2 { font-size: 1.8rem; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 10px; margin-top: 20px; }
-        p { margin-bottom: 15px; font-size: 1.1rem; }
-        
-        code {
-            background: #eee;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-            color: #d63384;
-        }
-
-        /* --- HEADER & HERO --- */
-        header {
+            padding: 40px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 500px;
             text-align: center;
-            padding: 60px 20px;
+        }
+
+        h1 { margin-bottom: 10px; }
+        p { margin-bottom: 30px; color: #666; }
+
+        /* --- FORM ELEMENTS --- */
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #ccc;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
+        }
+
+        button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        button:hover { transform: scale(1.02); }
+        button:active { transform: scale(0.98); }
+
+        /* --- ADMIN AREA --- */
+        .admin-controls {
+            margin-top: 30px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+            font-size: 0.8rem;
         }
         
-        .hero-sub {
-            font-size: 1.2rem;
-            color: #666;
+        .admin-btn {
+            background: #333;
+            font-size: 0.8rem;
+            padding: 8px;
+            width: auto;
             margin-top: 10px;
         }
 
-        /* --- DIAGRAM PLACEHOLDERS --- */
-        .diagram-box {
-            width: 100%;
-            height: 250px;
-            background: #e0e5ec;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 20px 0;
-            color: #555;
-            font-style: italic;
-            border: 2px dashed #ccc;
+        /* Success Message Animation */
+        #successMessage {
+            display: none;
+            color: green;
+            font-weight: bold;
+            margin-top: 15px;
         }
-
-        /* --- FORMULAS --- */
-        .formula {
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            font-family: 'Times New Roman', serif;
-            font-size: 1.3rem;
-            margin: 20px 0;
-            border: 1px solid #ddd;
-        }
-
-        /* --- COMPONENT DEMO GRID --- */
-        .demo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .demo-card {
-            background: white;
-            padding: 20px;
-            border-radius: 16px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-
-        .warning-box {
-            background: #fff3cd;
-            color: #856404;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 5px solid #ffeeba;
-            margin: 20px 0;
-        }
-
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>Liquid Glass in the Browser</h1>
-            <p class="hero-sub">Refraction with CSS and SVG | 8th Standard Project</p>
-            <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.7;">Project by [Your Name Here]</p>
-        </header>
+    <div class="glass-panel">
+        <h1>Review My Project</h1>
+        <p>Please leave your feedback on my "Sikkim" presentation!</p>
 
-        <section id="intro">
-            <h2>Introduction</h2>
-            <p>Apple introduced the <strong>Liquid Glass</strong> effect during WWDC 2025—a stunning UI effect that makes interface elements appear to be made of curved, refractive glass.</p>
-            <p>This project is a hands‑on exploration of how to recreate a similar effect on the web using CSS, SVG displacement maps, and physics-based refraction calculations.</p>
-            
-            <div class="warning-box">
-                <strong>Note:</strong> The interactive demos in this project are optimized for Google Chrome due to specific SVG filter support (backdrop-filter).
-            </div>
-        </section>
-
-        <section id="physics">
-            <h2>1. Understanding Refraction</h2>
-            
-            <p>Refraction is what happens when light changes direction as it passes from one material to another (like from air into glass). This bending occurs because light travels at different speeds through different materials.</p>
-            
-            <h3>Snell–Descartes Law</h3>
-            <div class="formula">
-                n₁ sin(θ₁) = n₂ sin(θ₂)
-            </div>
-            <ul>
-                <li><strong>n₁:</strong> Refractive index of first medium (Air ≈ 1)</li>
-                <li><strong>θ₁:</strong> Angle of incidence</li>
-                <li><strong>n₂:</strong> Refractive index of second medium (Glass > 1)</li>
-                <li><strong>θ₂:</strong> Angle of refraction</li>
-            </ul>
-            <p>In our simulation, we assume the ambient medium is air (index=1) and our glass has an index of 1.5. To keep calculations simple, we only calculate one refraction event.</p>
-        </section>
-
-        <section id="math">
-            <h2>2. Creating the Glass Surface</h2>
-            <p>To create the effect, we must define the shape of the glass. We use a mathematical function to determine the "height" (thickness) of the glass at any point.</p>
-            
-            <div class="diagram-box">
-                [Diagram showing a cross-section of a convex lens]
+        <form id="reviewForm">
+            <div class="input-group">
+                <label for="pName">Parent/Visitor Name</label>
+                <input type="text" id="pName" placeholder="Enter your name" required>
             </div>
 
-            <p>From this height, we calculate the normal vector (perpendicular to the surface) to determine how light hits the glass. Concave surfaces push light rays outward, while convex surfaces keep them inside.</p>
-            
-            <h3>The Displacement Vector Field</h3>
-            <p>We pre-calculate how much a light ray shifts for every point on the glass. We then normalize these vectors so the maximum displacement is 1. This allows us to store the data in an image.</p>
-        </section>
-
-        <section id="svg">
-            <h2>3. The SVG Displacement Map</h2>
-            <p>Browsers can't read physics formulas directly, so we translate our math into an <strong>SVG Displacement Map</strong>.</p>
-            <p>This is an image where pixel colors tell the browser how to shift pixels:</p>
-            <ul>
-                <li><strong>Red Channel:</strong> Shifts pixels Left/Right (X-axis)</li>
-                <li><strong>Green Channel:</strong> Shifts pixels Up/Down (Y-axis)</li>
-            </ul>
-            
-            <div class="diagram-box">
-                
+            <div class="input-group">
+                <label for="pRating">Rating (1-5)</label>
+                <select id="pRating">
+                    <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
+                    <option value="4">⭐⭐⭐⭐ (Very Good)</option>
+                    <option value="3">⭐⭐⭐ (Good)</option>
+                    <option value="2">⭐⭐ (Fair)</option>
+                    <option value="1">⭐ (Needs Work)</option>
+                </select>
             </div>
 
-            <p>We use the standard SVG filter <code>&lt;feDisplacementMap /&gt;</code> to apply this to our website elements.</p>
-        </section>
-
-        <section id="gallery">
-            <h2>4. Real UI Components</h2>
-            <p>By combining our refraction map with a "Specular Highlight" (a shiny edge reflection), we can build real interface elements.</p>
-            
-            <div class="demo-grid">
-                <div class="demo-card">
-                    <h3>Magnifying Glass</h3>
-                    <p>Uses strong refraction to zoom into content.</p>
-                </div>
-                <div class="demo-card">
-                    <h3>Switch</h3>
-                    <p>Uses a "lip bezel" (convex outside, concave inside).</p>
-                </div>
-                <div class="demo-card">
-                    <h3>Music Player</h3>
-                    <p>Mimics the Apple Music glass panel style.</p>
-                </div>
-                <div class="demo-card">
-                    <h3>Slider</h3>
-                    <p>Sides refract the background while the center remains clear.</p>
-                </div>
+            <div class="input-group">
+                <label for="pComment">Feedback</label>
+                <textarea id="pComment" rows="4" placeholder="What did you like? What can I improve?" required></textarea>
             </div>
-        </section>
 
-        <section id="conclusion">
-            <h2>Conclusion</h2>
-            <p>This project successfully recreates the core of the Liquid Glass effect using standard web technologies. While currently best viewed in Chrome, it demonstrates that complex physics simulations can be run in the browser to create beautiful user interfaces.</p>
-            <p><strong>References:</strong> Snell's Law, SVG Filter Specification, WWDC 2025 Design Resources.</p>
-        </section>
+            <button type="submit">Submit Review</button>
+        </form>
+
+        <div id="successMessage">Thank you! Your review has been saved.</div>
+
+        <div class="admin-controls">
+            <p>Admin Controls (For Student Only)</p>
+            <button class="admin-btn" onclick="downloadMarkdown()">Download All Reviews (.md)</button>
+            <button class="admin-btn" onclick="clearData()" style="background: #d63384;">Reset All Data</button>
+            <div id="countDisplay" style="margin-top:5px;">Reviews collected: 0</div>
+        </div>
     </div>
+
+    <script>
+        // 1. Initialize Storage
+        let reviews = JSON.parse(localStorage.getItem('sikkimProjectReviews')) || [];
+        updateCount();
+
+        // 2. Handle Form Submission
+        document.getElementById('reviewForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop page from refreshing
+
+            // Get values
+            const name = document.getElementById('pName').value;
+            const rating = document.getElementById('pRating').value;
+            const comment = document.getElementById('pComment').value;
+            const date = new Date().toLocaleString();
+
+            // Create review object
+            const newReview = {
+                name: name,
+                rating: rating,
+                comment: comment,
+                date: date
+            };
+
+            // Save to Array and LocalStorage
+            reviews.push(newReview);
+            localStorage.setItem('sikkimProjectReviews', JSON.stringify(reviews));
+
+            // Show Success & Reset Form
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('reviewForm').reset();
+            updateCount();
+
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+                document.getElementById('successMessage').style.display = 'none';
+            }, 3000);
+        });
+
+        // 3. Update the counter
+        function updateCount() {
+            document.getElementById('countDisplay').innerText = "Reviews collected: " + reviews.length;
+        }
+
+        // 4. Download Function (The Magic Part)
+        function downloadMarkdown() {
+            if (reviews.length === 0) {
+                alert("No reviews to save yet!");
+                return;
+            }
+
+            let mdContent = "# Project Reviews: Sikkim Presentation\n\n";
+            mdContent += `**Generated on:** ${new Date().toLocaleString()}\n`;
+            mdContent += `**Total Reviews:** ${reviews.length}\n\n`;
+            mdContent += "---\n\n";
+
+            reviews.forEach((r, index) => {
+                mdContent += `## Review #${index + 1} by ${r.name}\n`;
+                mdContent += `**Date:** ${r.date}\n`;
+                mdContent += `**Rating:** ${r.rating}/5 Stars\n`;
+                mdContent += `**Feedback:**\n> ${r.comment}\n\n`;
+                mdContent += "---\n\n";
+            });
+
+            // Create a "Blob" (a file-like object)
+            const blob = new Blob([mdContent], { type: 'text/markdown' });
+            
+            // Create a fake link to click automatically
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'Sikkim_Project_Reviews.md';
+            a.click();
+        }
+
+        // 5. Clear Data Function
+        function clearData() {
+            if(confirm("Are you sure? This will delete all saved reviews!")) {
+                localStorage.removeItem('sikkimProjectReviews');
+                reviews = [];
+                updateCount();
+                alert("Data cleared.");
+            }
+        }
+    </script>
 
 </body>
 </html>
