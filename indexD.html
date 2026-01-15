@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Andaman and Nicobar Islands Project</title>
+    <style>
+        /* --- GLASS THEME --- */
+:root {
+            --bg-gradient: radial-gradient(circle at 50% 50%, #eef2f5 0%, #dbe2e8 100%);
+            /* Much more transparent glass background */
+            --glass-bg: rgba(255, 255, 255, 0.25); 
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            
+            --accent: #fbff00; /* The Yellow Color */
+            --gold: #ffc107;   /* The Star Fill Color */
+        }
+
+        body {
+            background-image: url("Tahoe.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            background-color: #cccccc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            /* This blur is what makes the text readable on a transparent background */
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+            padding: 40px 30px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        h2 { margin-top: 0; color: #fbff00; }
+        
+        /* Inputs are slightly transparent too */
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255, 0.6);
+            background: rgba(255, 255, 255, 0.5); 
+            box-sizing: border-box;
+            font-family: inherit;
+            outline: none;
+        }
+
+        input:focus, textarea:focus {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: var(--accent);
+        }
+
+        /* --- NEW STAR RATING CSS --- */
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 8px; /* Slightly more space between stars */
+        }
+
+        .star-rating input { display: none; }
+
+        .star-rating label {
+            font-size: 3.5rem; /* Bigger stars */
+            cursor: pointer;
+            transition: all 0.2s ease;
+            
+            /* THE BLUE OUTLINE TRICK */
+            color: transparent; 
+            -webkit-text-stroke: 2px var(--accent); /* 2px Blue Outline */
+        }
+
+        /* Hover & Checked State: Fill with Gold */
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input:checked ~ label {
+            color: var(--gold); /* Fills with Gold */
+            -webkit-text-stroke: 0px; /* Removes outline when filled (optional) */
+            transform: scale(1.1); /* Slight pop effect */
+            filter: drop-shadow(0 0 5px rgba(255, 193, 7, 0.6)); /* Glow */
+        }
+
+        button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.1s;
+            box-shadow: 0 4px 15px rgba(0, 113, 227, 0.3);
+        }
+        
+        button:active { transform: scale(0.98); }
+        button:disabled { background: #ccc; cursor: not-allowed; box-shadow: none;}
+
+        .loader { display: none; margin-top: 15px; font-size: 0.9rem; color: #555; }
+    </style>
+</head>
+<body>
+
+    <div>
+        <h2> Andaman and Nicobar Islands: The Land of Kalapani {Review} </h2>
+
+        <form name="submit-to-google-sheet">
+            
+            <input name="name" type="text" placeholder="Your Name" required>
+            
+            <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5" required><label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+            </div>
+
+            <textarea name="comment" rows="3" placeholder="Any comments?" required></textarea>
+
+            <button type="submit" id="btn">Submit Review</button>
+        </form>
+
+        <div class="loader" id="loader">Sending data...</div>
+        <div id="success" style="display:none; color:green; margin-top:15px; font-weight:bold;">
+            ✅ Review Saved! Thank you.
+        </div>
+    </div>
+
+    <script>
+        // ----------------------------------------------------
+        // PASTE YOUR GOOGLE DEPLOYMENT URL BELOW
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzU4Gop860K2FOXI839I_8nSf7g8twgJ0sR9fpO_JlwkitvvLjj0xuBB0pZ-fVw0pb2/exec';
+        // ----------------------------------------------------
+
+        const form = document.forms['submit-to-google-sheet'];
+        const btn = document.getElementById('btn');
+        const loader = document.getElementById('loader');
+        const success = document.getElementById('success');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            const rating = document.querySelector('input[name="rating"]:checked');
+            if (!rating) {
+                alert("Please tap a star to rate!");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Saving...";
+            loader.style.display = 'block';
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            fetch(scriptURL, { 
+                method: 'POST', 
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                loader.style.display = 'none';
+                success.style.display = 'block';
+                btn.innerText = "Submitted";
+                form.reset();
+                setTimeout(() => {
+                    success.style.display = 'none';
+                    btn.disabled = false;
+                    btn.innerText = "Submit Review";
+                }, 4000);
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                loader.innerText = "Error! Please try again.";
+                btn.disabled = false;
+            });
+        });
+    </script>
+
+</body>
+</html>
